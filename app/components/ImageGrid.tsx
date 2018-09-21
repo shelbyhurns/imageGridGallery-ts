@@ -11,8 +11,8 @@ type imageDataProperties<T> = {
 
 type State = {
   open: boolean;
-  imageLength: Partial<number | null>;
-  atIndex: Partial<number | null>;
+  imageLength: Partial<null | number>;
+  atIndex: Partial<null | number>;
 };
 
 type Props = {
@@ -51,7 +51,7 @@ export class ImageGrid extends React.Component<Props, State> {
   public nextImage = (): void => {
     const { atIndex, imageLength } = this.state;
 
-    if (imageLength && atIndex) {
+    if (atIndex !== null && imageLength !== null) {
       this.setState({
         atIndex: (atIndex + 1) % imageLength
       });
@@ -62,7 +62,7 @@ export class ImageGrid extends React.Component<Props, State> {
     const { atIndex, imageLength } = this.state;
 
     //Set state to last image to loop the images
-    if (imageLength && atIndex) {
+    if (atIndex !== null && imageLength !== null) {
       const lastImage: number = imageLength - 1;
       let imageIndex: number = atIndex < 1 ? lastImage : atIndex - 1;
 
@@ -78,7 +78,7 @@ export class ImageGrid extends React.Component<Props, State> {
     let imageDataProperties;
     let lightboxImageSrc: any;
 
-    if (atIndex) {
+    if (atIndex !== null) {
       imageDataProperties = images[atIndex];
       lightboxImageSrc = `${imageDataProperties.lightboxImageSrc}${
         imageDataProperties.lightboxImage
