@@ -1,0 +1,124 @@
+@import "../../styles/modules/variables";
+@import "../../styles/modules/responsive.scss";
+@import "../../styles/modules/icons.scss";
+
+@mixin flex-gallery-row() {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+@mixin icon-arrow-position() {
+  font-size: 3rem;
+  color: #000000;
+  cursor: pointer;
+  position: fixed;
+  top: 50%;
+  margin-top: calc(-56px / 2); //Lower the arrows to be half on the screen
+  z-index: 1205;
+}
+
+.thumbnail-container {
+  margin: 0 auto;
+  max-width: $desktop-size;
+  .grid {
+    .cell {
+      margin: 0.35rem;
+      cursor: pointer;
+      overflow: hidden;
+      .image {
+        display: block;
+        max-width: 100%;
+        transition: all 0.3s;
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+}
+
+.lightbox-container {
+  .lightbox-img-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    .lightbox-img {
+      margin: 0;
+      padding: 0;
+      max-width: 80vw;
+      max-height: 80vh;
+      display: block;
+    }
+  }
+  .navigation-container {
+    .icon-keyboard_arrow_left {
+      @include icon-arrow-position();
+      left: 0rem;
+    }
+    .icon-keyboard_arrow_right {
+      @include icon-arrow-position();
+      right: 0rem;
+    }
+  }
+  .lightbox-overlay {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #383636;
+    opacity: 0.7;
+  }
+}
+
+.openAnimation {
+  animation: fadeIn 500ms;
+}
+
+.closeAnimation {
+  transition: fadeOut 500ms;
+}
+
+@include media-breakpoint-between($mobile-size, $tablet-size) {
+  .grid {
+    @include flex-gallery-row;
+    .cell {
+      width: calc(100% / 3);
+    }
+  }
+}
+
+@include media-breakpoint-up($tablet-size) {
+  .grid {
+    @include flex-gallery-row;
+    .cell {
+      width: calc((100% / 3) - 2rem);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

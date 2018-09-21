@@ -1,0 +1,16 @@
+@import "../modules/_variables.scss";
+@import "../modules/_fonts.scss";
+
+.flex-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gallery-container {
+  text-align: center;
+  .header {
+    @include header;
+  }
+}
