@@ -1,25 +1,20 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, HTMLProps } from "react";
 import ReactDom from "react-dom";
 import "styles/components/Lightbox.scss";
 
 type ClickEvent = React.MouseEvent<HTMLElement>;
 
 type LightboxContainerProps = {
-  lightboxImageSrc: string | any;
+  lightboxImageSrc: string;
 };
 
-type LeftArrowProps = {
+type ArrowsProps = {
   onPrevImage: (e: ClickEvent) => void;
-};
-
-type RightArrowProps = {
   onNextImage: (e: ClickEvent) => void;
 };
 
-type ArrowsProps = LeftArrowProps & RightArrowProps;
-
 type LightboxProps = {
-  images: any;
+  images: Array<object>;
   onPrevImage: (e: ClickEvent) => void;
   onNextImage: (e: ClickEvent) => void;
   onClose: (el: ReactElement<HTMLDocument>) => void;
@@ -40,18 +35,18 @@ const LightboxContainer: React.SFC<LightboxContainerProps> = ({
   </div>
 );
 
-const LeftArrow: React.SFC<LeftArrowProps> = ({ onPrevImage }) => (
-  <i className="icon-keyboard_arrow_left" onClick={onPrevImage} />
+const LeftArrow: React.SFC<HTMLProps<HTMLElement>> = ({ ...rest }) => (
+  <i className="icon-keyboard_arrow_left" {...rest} />
 );
 
-const RightArrow: React.SFC<RightArrowProps> = ({ onNextImage }) => (
-  <i className="icon-keyboard_arrow_right" onClick={onNextImage} />
+const RightArrow: React.SFC<HTMLProps<HTMLElement>> = ({ ...rest }) => (
+  <i className="icon-keyboard_arrow_right" {...rest} />
 );
 
 const Arrows: React.SFC<ArrowsProps> = ({ onNextImage, onPrevImage }) => (
   <div className="navigation-container">
-    <LeftArrow onPrevImage={onPrevImage} />
-    <RightArrow onNextImage={onNextImage} />
+    <LeftArrow onClick={onPrevImage} />
+    <RightArrow onClick={onNextImage} />
   </div>
 );
 
@@ -63,22 +58,21 @@ export class Lightbox extends React.Component<Props> {
     document.removeEventListener("click", this.handleGlobalClick);
   }
 
-  handleGlobalClick = (e: any): void => {
+  handleGlobalClick = ({ target }: any) => {
     const { onClose } = this.props;
-    const isLightboxOverlay: boolean =
-      e.target.className === "lightbox-overlay";
-    const lightboxWrapper: any = ReactDom.findDOMNode(this);
+    const isLightboxOverlay = target.className === "lightbox-overlay";
+    const lightboxWrapper = ReactDom.findDOMNode(this)!;
 
     /**
      * Close the displayed image if the click doesn't match
      * any of the target className elements
      */
-    if (!lightboxWrapper.contains(e.target) || isLightboxOverlay) {
-      onClose(e.target);
+    if (!lightboxWrapper.contains(target) || isLightboxOverlay) {
+      onClose(target);
     }
   };
 
-  render(): JSX.Element {
+  render() {
     const { lightboxImageSrc, onNextImage, onPrevImage } = this.props;
 
     return (

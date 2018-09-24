@@ -2,21 +2,21 @@ import React, { MouseEvent } from "react";
 import { Lightbox } from "app/components/Lightbox";
 import "styles/components/ImageGrid.scss";
 
-type imageDataProperties<T> = {
-  thumbnail: T;
-  thumbnailSrc: T;
-  lightboxImage: T;
-  lightboxImageSrc: T;
+type ImageDataProperties = {
+  thumbnail: string;
+  thumbnailSrc: string;
+  lightboxImage: string;
+  lightboxImageSrc: string;
 };
 
 type State = {
   open: boolean;
-  imageLength: Partial<null | number>;
-  atIndex: Partial<null | number>;
+  imageLength: null | number;
+  atIndex: null | number;
 };
 
 type Props = {
-  images: imageDataProperties<string>[];
+  images: Array<ImageDataProperties>;
 };
 
 export class ImageGrid extends React.Component<Props, State> {
@@ -26,12 +26,10 @@ export class ImageGrid extends React.Component<Props, State> {
     atIndex: null
   };
 
-  public openImage = (e: MouseEvent<HTMLDivElement>): void => {
+  openImage = ({ currentTarget }: MouseEvent<HTMLDivElement>) => {
     const { images } = this.props;
     const { open } = this.state;
-    const indexNumber: string | null = e.currentTarget.getAttribute(
-      "data-image-index"
-    );
+    const indexNumber = currentTarget.getAttribute("data-image-index");
 
     if (!open && indexNumber) {
       this.setState({
@@ -42,29 +40,29 @@ export class ImageGrid extends React.Component<Props, State> {
     }
   };
 
-  public closeImage = (): void => {
+  closeImage = () => {
     this.setState({
       open: false
     });
   };
 
-  public nextImage = (): void => {
+  nextImage = () => {
     const { atIndex, imageLength } = this.state;
 
-    if (atIndex !== null && imageLength !== null) {
+    if (atIndex !== null && imageLength) {
       this.setState({
         atIndex: (atIndex + 1) % imageLength
       });
     }
   };
 
-  public prevImage = (): void => {
+  prevImage = () => {
     const { atIndex, imageLength } = this.state;
 
     //Set state to last image to loop the images
-    if (atIndex !== null && imageLength !== null) {
-      const lastImage: number = imageLength - 1;
-      let imageIndex: number = atIndex < 1 ? lastImage : atIndex - 1;
+    if (atIndex !== null && imageLength) {
+      const lastImage = imageLength - 1;
+      let imageIndex = atIndex < 1 ? lastImage : atIndex - 1;
 
       this.setState({
         atIndex: imageIndex
@@ -72,11 +70,11 @@ export class ImageGrid extends React.Component<Props, State> {
     }
   };
 
-  render(): JSX.Element {
-    const { open, atIndex } = this.state;
+  getLightboxImageSrc = () => {
+    const { atIndex } = this.state;
     const { images } = this.props;
+    let lightboxImageSrc = "";
     let imageDataProperties;
-    let lightboxImageSrc: any;
 
     if (atIndex !== null) {
       imageDataProperties = images[atIndex];
@@ -84,6 +82,12 @@ export class ImageGrid extends React.Component<Props, State> {
         imageDataProperties.lightboxImage
       }`;
     }
+    return lightboxImageSrc;
+  };
+
+  render() {
+    const { open } = this.state;
+    const { images } = this.props;
 
     return (
       <div className="thumbnail-container">
@@ -105,7 +109,7 @@ export class ImageGrid extends React.Component<Props, State> {
         {open && (
           <Lightbox
             images={images}
-            lightboxImageSrc={lightboxImageSrc}
+            lightboxImageSrc={this.getLightboxImageSrc()}
             open={open}
             onPrevImage={this.prevImage}
             onNextImage={this.nextImage}
