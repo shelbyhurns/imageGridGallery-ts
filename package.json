@@ -33,7 +33,8 @@
       "!app/_tests_/*"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss)$": "identity-obj-proxy"
+      "\\.(css|scss)$": "identity-obj-proxy",
+      "^app(.*)$": "<rootDir>/app$1"
     }
   },
   "dependencies": {
